@@ -1,2 +1,4 @@
-package com.example.bookingbreezebackend.service;public interface IBookedRoomService {
+package com.example.bookingbreezebackend.service;
+
+public interface IBookedRoomService {
 }
