@@ -12,8 +12,8 @@ const RoomSearch = () => {
 		roomType: ""
 	})
 
-	const [errorMessage, setErrorMessage] = useState("")
 	const [availableRooms, setAvailableRooms] = useState([])
+	const [errorMessage,setErrorMessage]=useState("")
 	const [isLoading, setIsLoading] = useState(false)
 
 	const handleSearch = (e) => {
