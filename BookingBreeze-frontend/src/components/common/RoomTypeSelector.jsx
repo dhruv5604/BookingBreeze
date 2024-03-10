@@ -1,6 +1,8 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react"
 import { getRoomTypes } from "../utils/ApiFunctions"
 
+// eslint-disable-next-line react/prop-types
 const RoomTypeSelector = ({ handleRoomInputChange, newRoom }) => {
 	const [roomTypes, setRoomTypes] = useState([""])
 	const [showNewRoomTypeInput, setShowNewRoomTypeInput] = useState(false)
@@ -32,6 +34,7 @@ const RoomTypeSelector = ({ handleRoomInputChange, newRoom }) => {
 						required
 						className="form-select"
 						name="roomType"
+						id="roomType"
 						onChange={(e) => {
 							if (e.target.value === "Add New") {
 								setShowNewRoomTypeInput(true)
@@ -39,6 +42,7 @@ const RoomTypeSelector = ({ handleRoomInputChange, newRoom }) => {
 								handleRoomInputChange(e)
 							}
 						}}
+						// eslint-disable-next-line react/prop-types
 						value={newRoom.roomType}>
 						<option value="">Select a room type</option>
 						<option value={"Add New"}>Add New</option>

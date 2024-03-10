@@ -19,9 +19,7 @@ export async function addRoom(photo, roomType, roomPrice) {
 	formData.append("roomType", roomType)
 	formData.append("roomPrice", roomPrice)
 
-	const response = await api.post("/rooms/add/new-room", formData,{
-		headers: getHeader()
-	})
+	const response = await api.post("/rooms/add/new-room", formData)
 	if (response.status === 201) {
 		return true
 	} else {
@@ -32,7 +30,7 @@ export async function addRoom(photo, roomType, roomPrice) {
 /* This function gets all room types from thee database */
 export async function getRoomTypes() {
 	try {
-		const response = await api.get("/rooms/room/types")
+		const response = await api.get("/rooms/room-types")
 		return response.data
 	} catch (error) {
 		throw new Error("Error fetching room types")
@@ -171,6 +169,7 @@ export async function loginUser(login) {
 
 /*  This is function to get the user profile */
 export async function getUserProfile(userId, token) {
+	// eslint-disable-next-line no-useless-catch
 	try {
 		const response = await api.get(`users/profile/${userId}`, {
 			headers: getHeader()
@@ -195,6 +194,7 @@ export async function deleteUser(userId) {
 
 /* This is the function to get a single user */
 export async function getUser(userId, token) {
+	// eslint-disable-next-line no-useless-catch
 	try {
 		const response = await api.get(`/users/${userId}`, {
 			headers: getHeader()

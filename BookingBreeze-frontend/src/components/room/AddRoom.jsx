@@ -19,7 +19,7 @@ const AddRoom = () => {
 		let value = e.target.value
 		if (name === "roomPrice") {
 			if (!isNaN(value)) {
-				value = parseInt(value)
+				value.parseInt(value)
 			} else {
 				value = ""
 			}
@@ -48,10 +48,6 @@ const AddRoom = () => {
 		} catch (error) {
 			setErrorMessage(error.message)
 		}
-		setTimeout(() => {
-			setSuccessMessage("")
-			setErrorMessage("")
-		}, 3000)
 	}
 
 	return (
