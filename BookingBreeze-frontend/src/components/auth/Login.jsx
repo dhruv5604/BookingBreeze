@@ -2,16 +2,17 @@ import React, { useState } from "react"
 import { loginUser } from "../utils/ApiFunctions"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthProvider"
+import axios from "axios"
 
 const Login = () => {
 	const [errorMessage, setErrorMessage] = useState("")
 	const [login, setLogin] = useState({
 		email: "",
 		password: ""
-	})
+	})		
 
 	const navigate = useNavigate()
-	const auth = useAuth()
+	// const auth = useAuth()
 	const location = useLocation()
 	const redirectUrl = location.state?.path || "/"
 
@@ -21,10 +22,10 @@ const Login = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
-		const success = await loginUser(login)
+		const success = await axios.post("http://localhost:8080/users/login",{login});
 		if (success) {
-			const token = success.token
-			auth.handleLogin(token)
+			// const token = success.token
+			// auth.handleLogin(token)
 			navigate(redirectUrl, { replace: true })
 		} else {
 			setErrorMessage("Invalid username or password. Please try again.")

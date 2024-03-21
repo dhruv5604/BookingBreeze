@@ -1,4 +1,4 @@
-import axios from "axios"
+ import axios from "axios"
 
 export const api = axios.create({
 	baseURL: "http://localhost:8080"
@@ -141,7 +141,7 @@ export async function getAvailableRooms(checkInDate, checkOutDate, roomType) {
 /* This function register a new user */
 export async function registerUser(registration) {
 	try {
-		const response = await api.post("/auth/register-user", registration)
+		const response = await api.post("/users/signup", registration)
 		return response.data
 	} catch (error) {
 		if (error.reeponse && error.response.data) {
@@ -155,7 +155,7 @@ export async function registerUser(registration) {
 /* This function login a registered user */
 export async function loginUser(login) {
 	try {
-		const response = await api.post("/auth/login", login)
+		const response = await api.post("/users/login", login)
 		if (response.status >= 200 && response.status < 300) {
 			return response.data
 		} else {

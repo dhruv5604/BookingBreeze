@@ -22,7 +22,7 @@ import RequireAuth from "./components/auth/RequireAuth"
 
 function App() {
 	return (
-		<AuthProvider>
+		// <AuthProvider>
 			<main>
 				<Router>
 					<NavBar />
@@ -35,9 +35,10 @@ function App() {
 						<Route
 							path="/book-room/:roomId"
 							element={
-								<RequireAuth>
-									<Checkout />
-								</RequireAuth>
+								// <RequireAuth>
+								// 	<Checkout />
+								// </RequireAuth>
+								<Checkout/>
 							}
 						/>
 						<Route path="/browse-all-rooms" element={<RoomListing />} />
@@ -56,7 +57,7 @@ function App() {
 				</Router>
 				{/* <Footer /> */}
 			</main>
-		</AuthProvider>
+		// </AuthProvider>
 	)
 }
 

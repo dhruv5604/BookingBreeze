@@ -16,10 +16,10 @@ const AddRoom = () => {
 
 	const handleRoomInputChange = (e) => {
 		const name = e.target.name
-		let value = e.target.value
+		var value = e.target.value
 		if (name === "roomPrice") {
 			if (!isNaN(value)) {
-				value.parseInt(value)
+				value=parseInt(value)
 			} else {
 				value = ""
 			}

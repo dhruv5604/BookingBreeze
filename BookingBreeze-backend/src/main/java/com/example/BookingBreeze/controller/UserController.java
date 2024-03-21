@@ -1,60 +1,80 @@
 package com.example.BookingBreeze.controller;
 
 import com.example.BookingBreeze.model.User;
-import com.example.BookingBreeze.request.LoginRequest;
-import com.example.BookingBreeze.service.UserService;
+import com.example.BookingBreeze.service.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author Simpson Alfred
+ */
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
+    private final IUserService userService;
 
-    @Autowired
-    private UserService userService;
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<User>> getUsers() {
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.FOUND);
+    }
 
-        User user = userService.authenticateUser(email, password);
-
-        if (user != null) {
-            return ResponseEntity.ok().body("Login successful!"); // You can return user details or a success message
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+    @GetMapping("/{email}")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email) {
+        try {
+            User theUser = userService.getUser(email);
+            return ResponseEntity.ok(theUser);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching user");
         }
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
-        String firstName = registerRequest.getFirstName();
-        String lastName = registerRequest.getLastName();
-        String email = registerRequest.getEmail();
-        String password = registerRequest.getPassword();
-
-        User newUser = new User();
-        newUser.setFirstName(firstName);
-        newUser.setLastName(lastName);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-
+    @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_USER') and #email == principal.username)")
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") String email) {
         try {
-            userService.registerUser(newUser);
-            return ResponseEntity.ok().body("User registered successfully!"); // You can return user details or a success message
+            userService.deleteUser(email);
+            return ResponseEntity.ok("User deleted successfully");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting user: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody User user) {
+        User storedUser = userService.getUser(user.getEmail());
+        if (storedUser != null && storedUser.getPassword().equals(user.getPassword())) {
+            return "Login successful!";
+        } else {
+            return "Invalid email or password";
+        }
+    }
+
+    @PostMapping("/signup")
+    public String checkUser(@RequestBody User user) {
+
+        User storedUser = userService.getUser(user.getEmail());
+        if (storedUser != null && storedUser.getEmail().equals(user.getEmail())) {
+            return "Username is Already Registered!";
+        } else {
+            userService.registerUser(user);
+            return "Sign up Successful";
+        }
+
     }
 }
